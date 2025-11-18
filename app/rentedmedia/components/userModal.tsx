@@ -169,15 +169,20 @@ export default function UserModal({
           <Button color="danger" variant="light" onPress={close}>
             schließen
           </Button>
-          <Button
+              <Button
             color="primary"
             onPress={() => {
-              const selectedUser = sortedUserItems.find(
-                (x) =>
-                  x.id ==
-                  ((selectedUserKeys as Set<string>).values().next()
-                    .value as number),
-              );
+              // get first selected key (may be string | undefined), convert to number safely
+              const selectedKey = (selectedUserKeys as Set<string>).values().next()
+                .value;
+              const selectedId =
+                selectedKey !== undefined ? Number(selectedKey) : undefined;
+
+              const selectedUser =
+                selectedId !== undefined
+                  ? sortedUserItems.find((x) => x.id === selectedId)
+                  : undefined;
+
               if (selectedUser) {
                 setUser(selectedUser);
               }
