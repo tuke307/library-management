@@ -12,7 +12,7 @@ import {
   SelectItem,
   Switch,
   Badge,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React from "react";
 import { toast } from "react-toastify";
 import { MediaDetailProp } from "@/models/mediaDetails";

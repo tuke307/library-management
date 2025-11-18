@@ -13,7 +13,7 @@ import {
   Button,
   Link,
   SortDescriptor,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React from "react";
 import { RentedMediaTableProp } from "@/models/rentedMediaTable";
 import { updateRentedMediaById } from "@/actions/rentedMedia";

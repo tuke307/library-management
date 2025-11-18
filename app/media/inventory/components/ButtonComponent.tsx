@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { setAllMediaExists } from "@/actions/media";
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 
 interface ButtonComponentProps {
     onButtonClick: () => void;

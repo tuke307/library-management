@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Card, CardBody, CardHeader, Divider, Input } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Input } from "@heroui/react";
 import { ICreateUser, createUser } from "@/actions/user";
 import { SubmitButton } from "@/app/components/submitButton";
 import { toast } from "react-toastify";

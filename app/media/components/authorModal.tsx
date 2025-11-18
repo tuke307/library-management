@@ -19,7 +19,7 @@ import {
   Pagination,
   SortDescriptor,
   Selection,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Author } from "@prisma/client";
 
 export default function AuthorModal({

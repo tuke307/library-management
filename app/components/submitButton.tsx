@@ -1,5 +1,5 @@
 "use client";
-import { Button, ButtonProps } from "@nextui-org/react";
+import { Button, ButtonProps } from "@heroui/react";
 import { useFormStatus } from "react-dom";
 
 export function SubmitButton({ ...props }: ButtonProps) {

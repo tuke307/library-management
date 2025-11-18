@@ -1,13 +1,13 @@
 "use client";
 import {
   Link,
-  Navbar as NextUINavbar,
+  Navbar as HeroUINavbar,
   NavbarContent,
   NavbarBrand,
   NavbarItem,
   Button,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import React from "react";
 import { BsHouse } from "react-icons/bs";
@@ -39,7 +39,7 @@ export function Navbar() {
   }, [session, status]);
 
   return (
-    <NextUINavbar isBordered maxWidth="full">
+    <HeroUINavbar isBordered maxWidth="full">
       <NavbarBrand>
         <Link className="flex items-center justify-start gap-3" href="/">
           <BsHouse />
@@ -50,6 +50,6 @@ export function Navbar() {
       <NavbarContent justify="end">
         <NavbarItem>{AuthButton}</NavbarItem>
       </NavbarContent>
-    </NextUINavbar>
+    </HeroUINavbar>
   );
 }

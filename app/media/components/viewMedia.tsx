@@ -8,7 +8,7 @@ import {
   CardBody,
   CardHeader,
   Divider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React from "react";
 import { MediaDetailProp } from "@/models/mediaDetails";
 import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";

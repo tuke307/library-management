@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Input } from "@nextui-org/react";
+import { Input } from "@heroui/react";
 import { getRentedMediaByUserId } from "@/actions/rentedMedia";
 import { useFormState } from "react-dom";
 import { RentedMediaTableProp } from "@/models/rentedMediaTable";

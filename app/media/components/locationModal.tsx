@@ -17,7 +17,7 @@ import {
   Pagination,
   SortDescriptor,
   Selection,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Location } from "@prisma/client";
 
 export default function LocationModal({

@@ -10,7 +10,7 @@ import {
   getKeyValue,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Media, User } from "@prisma/client";
 import React from "react";
 import UserModal from "./userModal";

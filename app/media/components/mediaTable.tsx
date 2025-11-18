@@ -15,7 +15,7 @@ import {
   SortDescriptor,
   Tooltip,
   Checkbox,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React from "react";
 import { MediaTableProp } from "@/models/mediaTable";
 import { BsSearch, BsPen } from "react-icons/bs";

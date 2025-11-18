@@ -19,7 +19,7 @@ import {
   Pagination,
   SortDescriptor,
   Selection,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MediaTableProp } from "@/models/mediaTable";
 import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
 

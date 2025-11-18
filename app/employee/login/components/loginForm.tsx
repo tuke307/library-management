@@ -8,7 +8,7 @@ import {
   CardHeader,
   Divider,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BsFillEyeSlashFill, BsFillEyeFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
