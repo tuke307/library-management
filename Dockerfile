@@ -27,9 +27,13 @@ RUN \
 # Rebuild the source code only when needed
 FROM base AS builder
 
-# Set the DATABASE_URL environment variable
+# Set environment variables for build
 ARG DATABASE_URL
+ARG NEXTAUTH_URL
+ARG NEXTAUTH_SECRET
 ENV DATABASE_URL=$DATABASE_URL
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 
 
 WORKDIR /app
