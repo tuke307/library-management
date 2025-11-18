@@ -11,10 +11,10 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@nextui-org/react": "2.6.11",
-    "@nextui-org/system": "2.4.6",
-    "@nextui-org/theme": "2.4.5",
+    "@heroui/react": "^2.8.5",
+    "@heroui/theme": "^2.4.23",
     "@prisma/client": "^6.19.0",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3",
     "dotenv": "17.2.3",
