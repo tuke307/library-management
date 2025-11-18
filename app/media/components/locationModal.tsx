@@ -134,12 +134,14 @@ export default function LocationModal({
           <Button
             color="primary"
             onPress={() => {
-              const selectedLocation = sortedLocationItems.find(
-                (x) =>
-                  x.id ==
-                  ((selectedLocationKeys as Set<string>).values().next()
-                    .value as number),
-              );
+              const selectedKey = (selectedLocationKeys as Set<string>).values().next().value;
+              let selectedLocation: Location | undefined;
+              if (selectedKey !== undefined) {
+                const selectedId = Number(selectedKey);
+                if (!Number.isNaN(selectedId)) {
+                  selectedLocation = sortedLocationItems.find((x) => x.id === selectedId);
+                }
+              }
               if (selectedLocation) {
                 setLocation(selectedLocation);
               }
