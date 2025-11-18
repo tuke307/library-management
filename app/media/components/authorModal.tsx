@@ -174,12 +174,10 @@ export default function AuthorModal({
           <Button
             color="primary"
             onPress={() => {
-              const selectedAuthor = sortedAuthorItems.find(
-                (x) =>
-                  x.id ==
-                  ((selectedAuthorKeys as Set<string>).values().next()
-                    .value as number),
-              );
+              const selectedKey = (selectedAuthorKeys as Set<string>).values().next().value;
+              const selectedAuthor = selectedKey
+                ? sortedAuthorItems.find((x) => String(x.id) === selectedKey)
+                : undefined;
               if (selectedAuthor) {
                 setAuthor(selectedAuthor);
               }
