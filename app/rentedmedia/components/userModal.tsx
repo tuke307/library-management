@@ -129,7 +129,6 @@ export default function UserModal({
     <Modal
       backdrop="blur"
       size="5xl"
-      placeholder="center"
       isOpen={show}
       onClose={close}
     >
