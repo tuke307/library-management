@@ -83,7 +83,6 @@ export default function LocationModal({
     <Modal
       backdrop="blur"
       size="5xl"
-      placeholder="center"
       isOpen={show}
       onClose={close}
       id="location-modal"
