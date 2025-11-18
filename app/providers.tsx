@@ -11,7 +11,7 @@ export interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <SessionProvider>
-      <NextThemesProvider attribute="class" defaultTheme="light">
+      <NextThemesProvider attribute="class" defaultTheme="dark">
         <HeroUIProvider>
           {children}
         </HeroUIProvider>
