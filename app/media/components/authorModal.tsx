@@ -129,7 +129,6 @@ export default function AuthorModal({
     <Modal
       backdrop="blur"
       size="5xl"
-      placeholder="center"
       isOpen={show}
       onClose={close}
       id="author-modal"
