@@ -32,7 +32,10 @@ jobs:
         push: true
         tags: tonylukeregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_f76635462c624bcc8c2f4020d43da9bc }}/swe-library/app:${{ github.sha }}
         file: ./Dockerfile
-        build-args: DATABASE_URL=${{ secrets.DATABASE_URL }}
+        build-args: |
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
 
   deploy:
     runs-on: ubuntu-latest
