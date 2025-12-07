@@ -16,7 +16,7 @@ import {
 import React from "react";
 import { toast } from "react-toastify";
 import { MediaDetailProp } from "@/models/mediaDetails";
-import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
+import { MEDIA_TYPE, mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
 import {
   BsSave,
   BsX,
@@ -27,7 +27,7 @@ import {
 } from "react-icons/bs";
 import { IUpdateMedia, createMedia, deleteMedia, updateMedia } from "@/actions/media";
 import { useRouter } from "next/navigation";
-import { Author, Location, Media, MediaType, User } from "@prisma/client";
+import type { Author, Location, Media, MediaType, User } from "@prisma/client";
 import AuthorModal from "./authorModal";
 import { SubmitButton } from "@/app/components/submitButton";
 import LocationModal from "./locationModal";
@@ -35,7 +35,7 @@ import LocationModal from "./locationModal";
 const initialMedia: MediaDetailProp = {
   mediaId: undefined,
   mediaTitle: undefined,
-  mediaType: MediaType.BOOK,
+  mediaType: MEDIA_TYPE.BOOK,
   mediaContent: undefined,
   mediaPublished: false,
   mediaISBN: undefined,

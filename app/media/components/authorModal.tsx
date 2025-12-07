@@ -20,7 +20,7 @@ import {
   SortDescriptor,
   Selection,
 } from "@heroui/react";
-import { Author } from "@prisma/client";
+import type { Author } from "@prisma/client";
 
 export default function AuthorModal({
   authorList,

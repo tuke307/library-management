@@ -5,7 +5,6 @@ import { ICreateUser, createUser } from "@/actions/user";
 import { SubmitButton } from "@/app/components/submitButton";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { User } from "@prisma/client";
 import { BsPersonPlus } from "react-icons/bs";
 
 const initialState: ICreateUser = {
