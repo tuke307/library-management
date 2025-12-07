@@ -27,7 +27,7 @@ import {
 } from "react-icons/bs";
 import { IUpdateMedia, createMedia, deleteMedia, updateMedia } from "@/actions/media";
 import { useRouter } from "next/navigation";
-import type { Author, Location, Media, MediaType, User } from "@prisma/client";
+import type { Author, Location, Media, MediaType, User } from "@/client";
 import AuthorModal from "./authorModal";
 import { SubmitButton } from "@/app/components/submitButton";
 import LocationModal from "./locationModal";

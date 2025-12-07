@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/client";
-import { Location } from "@prisma/client";
+import type { Location } from "@/client";
 
 export default async function getAllFreeLocations(): Promise<Location[] | null> {
   const authors = await prisma.location.findMany({

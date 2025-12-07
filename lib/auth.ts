@@ -1,5 +1,4 @@
 import prisma from "@/client";
-import { PrismaClient } from "@prisma/client";
 import { User } from "next-auth";
 
 type LoginFn = (id: string, password: string) => Promise<User>;

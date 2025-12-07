@@ -1,4 +1,11 @@
-import { Author, Location, Media, MediaType, RentedMedia, User } from "@prisma/client";
+import type {
+  Author,
+  Location,
+  Media,
+  MediaType,
+  RentedMedia,
+  User,
+} from "@/prisma/generated/client";
 
 
 export type MediaDetailProp = {

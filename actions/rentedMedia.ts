@@ -1,7 +1,7 @@
 "use server";
 import prisma from "@/client";
+import type { RentedMedia } from "@/client";
 import { RentedMediaTableProp } from "@/models/rentedMediaTable";
-import { Media, RentedMedia } from "@prisma/client";
 
 export async function getRentedMediaByUserId(
   id: number,

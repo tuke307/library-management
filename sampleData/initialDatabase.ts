@@ -1,8 +1,6 @@
-import { MediaType, Media, User, Employee, PrismaClient } from "@prisma/client";
+import prisma from "@/client";
 import path from "path";
 import fs from "fs";
-
-const prisma = new PrismaClient();
 
 const users = JSON.parse(
   fs.readFileSync(path.join(__dirname, "users.json"), "utf8"),

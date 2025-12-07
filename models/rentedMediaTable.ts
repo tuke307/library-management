@@ -1,4 +1,4 @@
-import { MediaType } from "@prisma/client";
+import type { MediaType } from "@/prisma/generated/client";
 
 export type RentedMediaTableProp = {
   id: number;

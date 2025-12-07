@@ -18,7 +18,7 @@ import {
   SortDescriptor,
   Selection,
 } from "@heroui/react";
-import type { Location } from "@prisma/client";
+import type { Location } from "@/client";
 
 export default function LocationModal({
   freeLocations,

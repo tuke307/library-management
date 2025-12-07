@@ -20,7 +20,7 @@ import {
   SortDescriptor,
   Selection,
 } from "@heroui/react";
-import type { User } from "@prisma/client";
+import type { User } from "@/client";
 
 export default function UserModal({
   userList,

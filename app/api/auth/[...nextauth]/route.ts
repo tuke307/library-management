@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import type { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient, Employee } from "@prisma/client";
 import { randomBytes, randomUUID } from "crypto";
 import { login } from "@/lib/auth";
 

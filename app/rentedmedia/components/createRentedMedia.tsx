@@ -11,7 +11,7 @@ import {
   TableRow,
   Tooltip,
 } from "@heroui/react";
-import type { Media, User } from "@prisma/client";
+import type { Media, User } from "@/client";
 import React from "react";
 import UserModal from "./userModal";
 import { BsSearch, BsPlusLg, BsArrowReturnRight, BsXLg } from "react-icons/bs";

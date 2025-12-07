@@ -1,8 +1,8 @@
 "use server";
-import { Media, MediaType, User } from "@prisma/client";
+import prisma, { MediaType } from "@/client";
+import type { Media } from "@/client";
 import { MediaDetailProp } from "@/models/mediaDetails";
 import { MediaTableProp } from "@/models/mediaTable";
-import prisma from "@/client";
 
 export async function createMedia(
   type: MediaType,

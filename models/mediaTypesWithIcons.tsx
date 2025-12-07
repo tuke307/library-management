@@ -1,4 +1,4 @@
-import type { MediaType } from "@prisma/client";
+import type { MediaType } from "@/prisma/generated/client";
 import type { ReactNode } from "react";
 import { BsDisc, BsMap, BsNewspaper, BsBook } from "react-icons/bs";
 
