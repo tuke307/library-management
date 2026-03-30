@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Card, CardBody, CardHeader, Divider, Input } from "@heroui/react";
+import { Card, CardContent, CardHeader, Separator, Input } from "@heroui/react";
 import { ICreateUser, createUser } from "@/actions/user";
 import { SubmitButton } from "@/app/components/submitButton";
 import { toast } from "react-toastify";
@@ -47,26 +47,24 @@ export default function AddUserForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card shadow="md">
+      <Card className="shadow-md">
         <CardHeader className="flex gap-3">
           <h1 className="text-3xl">Nutzer hinzufügen</h1>
         </CardHeader>
-        <Divider />
-        <CardBody>
+        <Separator />
+        <CardContent>
           <div className="grid grid-cols-2 gap-2">
             <Input
-              isRequired
+              required
               type="text"
-              label="Nachname"
               name="lastName"
               placeholder="Mustermann"
               value={formData.lastName}
               onChange={handleChange}
             />
             <Input
-              isRequired
+              required
               type="text"
-              label="Vorname"
               name="firstName"
               placeholder="Max"
               value={formData.firstName}
@@ -74,9 +72,8 @@ export default function AddUserForm() {
             />
 
             <Input
-              isRequired
+              required
               type="email"
-              label="Email"
               name="email"
               placeholder="mustermann.max@gmail.com"
               value={formData.email!}
@@ -86,9 +83,8 @@ export default function AddUserForm() {
 
           <div className="mt-8 grid grid-cols-2 gap-2">
             <Input
-              isRequired
+              required
               type="text"
-              label="Straße"
               name="street"
               placeholder="Musterstraße"
               value={formData.street}
@@ -96,9 +92,8 @@ export default function AddUserForm() {
             />
 
             <Input
-              isRequired
+              required
               type="text"
-              label="Hausnummer"
               name="houseNumber"
               placeholder="1a"
               value={formData.houseNumber}
@@ -106,9 +101,8 @@ export default function AddUserForm() {
             />
 
             <Input
-              isRequired
+              required
               type="number"
-              label="PLZ"
               name="plz"
               placeholder="12345"
               value={formData.plz === 0 ? "" : formData.plz.toString()}
@@ -116,19 +110,23 @@ export default function AddUserForm() {
             />
 
             <Input
-              isRequired
+              required
               type="text"
-              label="Stadt"
               name="city"
               placeholder="Musterstadt"
               value={formData.city}
               onChange={handleChange}
             />
           </div>
-        </CardBody>
+        </CardContent>
       </Card>
 
-      <SubmitButton startContent={<BsPersonPlus className="m-1"/>}>Kunde erstellen</SubmitButton>
+      <SubmitButton>
+        <span className="mr-2 inline-flex">
+          <BsPersonPlus className="m-1" />
+        </span>
+        Kunde erstellen
+      </SubmitButton>
     </form>
   );
 }

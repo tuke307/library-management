@@ -1,29 +1,33 @@
 "use client";
-import React from 'react';
+import React from "react";
 import { setAllMediaExists } from "@/actions/media";
-import { Button } from '@heroui/react';
+import { Button } from "@heroui/react";
 
 interface ButtonComponentProps {
-    onButtonClick: () => void;
+  onButtonClick: () => void;
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({ onButtonClick }) => {
-    const handleResetClick = async () => {
-        await setAllMediaExists(false);
-        onButtonClick();
-    };
+  const handleResetClick = async () => {
+    await setAllMediaExists(false);
+    onButtonClick();
+  };
 
-    const handleSetClick = async () => {
-        await setAllMediaExists(true);
-        onButtonClick();
-    };
+  const handleSetClick = async () => {
+    await setAllMediaExists(true);
+    onButtonClick();
+  };
 
-    return (
-        <div>
-            <Button color='danger' variant='flat' onClick={handleResetClick}>alle zurücksetzen</Button>
-            <Button color='warning' variant='flat' onClick={handleSetClick}>alle setzen</Button>
-        </div>
-    );
+  return (
+    <div>
+      <Button variant="danger" onClick={handleResetClick}>
+        alle zurücksetzen
+      </Button>
+      <Button variant="secondary" onClick={handleSetClick}>
+        alle setzen
+      </Button>
+    </div>
+  );
 };
 
 export default ButtonComponent;

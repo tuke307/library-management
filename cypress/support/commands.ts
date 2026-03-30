@@ -36,24 +36,21 @@
 //   }
 // }
 
-
 declare namespace Cypress {
-    interface Chainable {
-      /**
-       * Log in as an employee.
-       * @param id - The employee's username or ID.
-       * @param pw - The employee's password.
-       */
-      loginEmployee(id: number, pw: string): Chainable;
-    }
+  interface Chainable {
+    /**
+     * Log in as an employee.
+     * @param id - The employee's username or ID.
+     * @param pw - The employee's password.
+     */
+    loginEmployee(id: number, pw: string): Chainable;
   }
-  
+}
 
-Cypress.Commands.add('loginEmployee', (id, pw) => {
-    cy.visit('/');
-    cy.contains('Mitarbeiterlogin').click();
-    cy.get('input[name="id"]').type(id.toString());
-    cy.get('input[name="password"]').type(pw);
-    cy.get('button[type="submit"]').click();
+Cypress.Commands.add("loginEmployee", (id, pw) => {
+  cy.visit("/");
+  cy.contains("Mitarbeiterlogin").click();
+  cy.get('input[name="id"]').type(id.toString());
+  cy.get('input[name="password"]').type(pw);
+  cy.get('button[type="submit"]').click();
 });
-  

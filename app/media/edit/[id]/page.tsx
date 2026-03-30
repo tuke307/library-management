@@ -15,7 +15,12 @@ export default async function MediaEditPage({
 
   return (
     <section className="m-10">
-      <CreateMedia authors={authorList} locations={freeLocationList} mediaDetails={mediaDetails} editMode />
+      <CreateMedia
+        authors={authorList}
+        locations={freeLocationList}
+        mediaDetails={mediaDetails}
+        editMode
+      />
     </section>
   );
 }

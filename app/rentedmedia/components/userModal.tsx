@@ -3,24 +3,14 @@ import React from "react";
 import {
   Input,
   Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
-  useDisclosure,
   Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  getKeyValue,
-  Pagination,
   SortDescriptor,
   Selection,
 } from "@heroui/react";
 import type { User } from "@/client";
+
+const getKeyValue = <T, K extends keyof T>(item: T, key: K): T[K] => item[key];
 
 export default function UserModal({
   userList,
@@ -33,7 +23,6 @@ export default function UserModal({
   close: () => void;
   setUser: (selectedUser: User) => void;
 }) {
-  const { onClose, onOpen, onOpenChange } = useDisclosure();
   const [userFilterValue, setUserFilterValue] = React.useState("");
   const [userPage, setUserPage] = React.useState(1);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
@@ -95,13 +84,9 @@ export default function UserModal({
     return (
       <div className="flex flex-col gap-4">
         <Input
-          isClearable
           placeholder="Suche nach Nachname..."
-          size="sm"
           value={userFilterValue}
-          variant="bordered"
-          onClear={() => setUserFilterValue("")}
-          onValueChange={onSearchChange}
+          onChange={(event) => onSearchChange(event.target.value)}
         />
       </div>
     );
@@ -110,90 +95,107 @@ export default function UserModal({
   const bottomUserContent = React.useMemo(() => {
     return (
       <div className="flex items-center justify-between px-2 py-2">
-        <Pagination
-          showControls
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          color="default"
-          page={userPage}
-          total={UserPages}
-          variant="light"
-          onChange={setUserPage}
-        />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onPress={() => setUserPage((prev) => Math.max(1, prev - 1))}
+            isDisabled={userPage <= 1}
+          >
+            Zurueck
+          </Button>
+          <span className="text-sm">
+            Seite {userPage} / {Math.max(1, UserPages)}
+          </span>
+          <Button
+            variant="ghost"
+            onPress={() =>
+              setUserPage((prev) => Math.min(Math.max(1, UserPages), prev + 1))
+            }
+            isDisabled={userPage >= Math.max(1, UserPages)}
+          >
+            Weiter
+          </Button>
+        </div>
       </div>
     );
   }, [userPage, UserPages]);
 
   return (
-    <Modal
-      backdrop="blur"
-      size="5xl"
-      isOpen={show}
-      onClose={close}
-    >
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Kunden</ModalHeader>
-        <ModalBody>
-          <Table
-            aria-label="user table"
-            topContent={topContent}
-            topContentPlacement="outside"
-            bottomContent={bottomUserContent}
-            bottomContentPlacement="outside"
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
-            selectionMode="single"
-            selectedKeys={selectedUserKeys}
-            onSelectionChange={setSelectedUserKeys}
-          >
-            <TableHeader>
-              <TableColumn key="lastName" allowsSorting>
-                Nachname
-              </TableColumn>
-              <TableColumn key="firstName" allowsSorting>
-                Vorname
-              </TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={"keine nutzer gefunden."}>
-              {sortedUserItems.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{getKeyValue(item, "lastName")}</TableCell>
-                  <TableCell>{getKeyValue(item, "firstName")}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="danger" variant="light" onPress={close}>
-            schließen
-          </Button>
+    <Modal>
+      <Modal.Backdrop
+        isOpen={show}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            close();
+          }
+        }}
+      >
+        <Modal.Container size="full">
+          <Modal.Dialog>
+            <Modal.Header className="flex flex-col gap-1">
+              <Modal.Heading>Kunden</Modal.Heading>
+            </Modal.Header>
+            <Modal.Body>
+              {topContent}
+              <Table>
+                <Table.ScrollContainer>
+                  <Table.Content aria-label="user table">
+                    <Table.Header>
+                      <Table.Column key="lastName" allowsSorting isRowHeader>
+                        Nachname
+                      </Table.Column>
+                      <Table.Column key="firstName" allowsSorting>
+                        Vorname
+                      </Table.Column>
+                    </Table.Header>
+                    <Table.Body items={sortedUserItems}>
+                      {(item: User) => (
+                        <Table.Row key={item.id}>
+                          <Table.Cell>
+                            {getKeyValue(item, "lastName")}
+                          </Table.Cell>
+                          <Table.Cell>
+                            {getKeyValue(item, "firstName")}
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+                    </Table.Body>
+                  </Table.Content>
+                </Table.ScrollContainer>
+              </Table>
+              {bottomUserContent}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="ghost" onPress={close}>
+                schließen
+              </Button>
               <Button
-            color="primary"
-            onPress={() => {
-              // get first selected key (may be string | undefined), convert to number safely
-              const selectedKey = (selectedUserKeys as Set<string>).values().next()
-                .value;
-              const selectedId =
-                selectedKey !== undefined ? Number(selectedKey) : undefined;
+                onPress={() => {
+                  // get first selected key (may be string | undefined), convert to number safely
+                  const selectedKey = (selectedUserKeys as Set<string>)
+                    .values()
+                    .next().value;
+                  const selectedId =
+                    selectedKey !== undefined ? Number(selectedKey) : undefined;
 
-              const selectedUser =
-                selectedId !== undefined
-                  ? sortedUserItems.find((x) => x.id === selectedId)
-                  : undefined;
+                  const selectedUser =
+                    selectedId !== undefined
+                      ? sortedUserItems.find((x) => x.id === selectedId)
+                      : undefined;
 
-              if (selectedUser) {
-                setUser(selectedUser);
-              }
+                  if (selectedUser) {
+                    setUser(selectedUser);
+                  }
 
-              close();
-            }}
-          >
-            auswählen
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+                  close();
+                }}
+              >
+                auswählen
+              </Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   );
 }

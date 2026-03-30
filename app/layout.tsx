@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="de" suppressHydrationWarning>
       <head />
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
           <ToastContainer
             position="top-center"

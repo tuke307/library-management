@@ -1,19 +1,19 @@
 "use client";
-import { Button } from "@heroui/button";
-import { useEffect } from 'react';
- 
+import { Button } from "@heroui/react";
+import { useEffect } from "react";
+
 export default function Error({
   error,
   reset,
 }: {
-  error: Error
-  reset: () => void
+  error: Error;
+  reset: () => void;
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error)
-  }, [error])
- 
+    console.error(error);
+  }, [error]);
+
   return (
     <div>
       <h2>Da hat etwas nicht geklappt!</h2>
@@ -26,5 +26,5 @@ export default function Error({
         neu laden
       </Button>
     </div>
-  )
+  );
 }

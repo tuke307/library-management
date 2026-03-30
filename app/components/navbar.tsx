@@ -1,13 +1,5 @@
 "use client";
-import {
-  Link,
-  Navbar as HeroUINavbar,
-  NavbarContent,
-  NavbarBrand,
-  NavbarItem,
-  Button,
-  Spinner,
-} from "@heroui/react";
+import { Link, Button, Spinner } from "@heroui/react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import React from "react";
 import { BsHouse } from "react-icons/bs";
@@ -17,12 +9,12 @@ export function Navbar() {
 
   const AuthButton = React.useMemo(() => {
     if (status === "loading") {
-      return <Spinner color="primary" />;
+      return <Spinner color="accent" />;
     } else {
       if (session) {
         return (
           <>
-            <Button onClick={() => signOut()} color="primary">
+            <Button onClick={() => signOut()} variant="primary">
               Logout
             </Button>
           </>
@@ -30,7 +22,7 @@ export function Navbar() {
       }
       return (
         <>
-          <Button onClick={() => signIn()} color="primary">
+          <Button onClick={() => signIn()} variant="primary">
             Mitarbeiterlogin
           </Button>
         </>
@@ -39,17 +31,15 @@ export function Navbar() {
   }, [session, status]);
 
   return (
-    <HeroUINavbar isBordered maxWidth="full">
-      <NavbarBrand>
+    <nav className="border-default-200 bg-background/70 sticky top-0 z-40 w-full border-b backdrop-blur-lg">
+      <header className="mx-auto flex h-16 w-full items-center justify-between px-4">
         <Link className="flex items-center justify-start gap-3" href="/">
           <BsHouse />
           <p className="font-bold text-inherit">Home</p>
         </Link>
-      </NavbarBrand>
 
-      <NavbarContent justify="end">
-        <NavbarItem>{AuthButton}</NavbarItem>
-      </NavbarContent>
-    </HeroUINavbar>
+        <div>{AuthButton}</div>
+      </header>
+    </nav>
   );
 }

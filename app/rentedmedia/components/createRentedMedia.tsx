@@ -1,16 +1,5 @@
 "use client";
-import {
-  Input,
-  Button,
-  Table,
-  TableBody,
-  TableHeader,
-  TableColumn,
-  TableCell,
-  getKeyValue,
-  TableRow,
-  Tooltip,
-} from "@heroui/react";
+import { Input, Button, Table } from "@heroui/react";
 import type { Media, User } from "@/client";
 import React from "react";
 import UserModal from "./userModal";
@@ -20,6 +9,8 @@ import { MediaTableProp } from "@/models/mediaTable";
 import { createRentedMedia } from "@/actions/rentedMedia";
 import { toast } from "react-toastify";
 import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
+
+const getKeyValue = <T, K extends keyof T>(item: T, key: K): T[K] => item[key];
 
 export default function CreateRentedMedia({
   users,
@@ -47,25 +38,18 @@ export default function CreateRentedMedia({
     return (
       <div className="flex flex-row gap-2">
         <Input
-          isRequired
-          isDisabled
-          isReadOnly
+          required
+          disabled
+          readOnly
           value={userId}
-          label="Kundennummer"
           type="number"
-          variant="bordered"
           name="userId"
           placeholder="Kundennummer"
           className="max-w-xs"
         />
 
         <div className="flex flex-row items-center gap-2">
-          <Button
-            isIconOnly
-            size="lg"
-            onPress={() => setShowUserModal(true)}
-            color="primary"
-          >
+          <Button isIconOnly size="lg" onPress={() => setShowUserModal(true)}>
             <BsSearch />
           </Button>
 
@@ -107,12 +91,10 @@ export default function CreateRentedMedia({
     return (
       <div className="flex flex-row gap-2">
         <div className="flex flex-grow flex-row gap-2">
-          <Button
-            color="primary"
-            variant="flat"
-            startContent={<BsPlusLg />}
-            onPress={() => setShowMediaModal(true)}
-          >
+          <Button onPress={() => setShowMediaModal(true)}>
+            <span className="mr-2 inline-flex">
+              <BsPlusLg />
+            </span>
             Medium hinzufügen
           </Button>
 
@@ -124,13 +106,10 @@ export default function CreateRentedMedia({
           />
         </div>
 
-        <Button
-          className="justify-end"
-          color="success"
-          variant="solid"
-          startContent={<BsArrowReturnRight />}
-          onPress={handleRent}
-        >
+        <Button className="justify-end" onPress={handleRent}>
+          <span className="mr-2 inline-flex">
+            <BsArrowReturnRight />
+          </span>
           ausleihen
         </Button>
       </div>
@@ -139,63 +118,61 @@ export default function CreateRentedMedia({
 
   return (
     <section className="m-3 flex flex-col gap-5">
-      <Table
-        aria-label="Media Table"
-        topContent={topContent}
-        topContentPlacement="outside"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-      >
-        <TableHeader>
-          <TableColumn key="type" className="w-10">
-            Typ
-          </TableColumn>
-          <TableColumn key="title" allowsSorting>
-            Titel
-          </TableColumn>
-          <TableColumn key="authorName" allowsSorting>
-            Author
-          </TableColumn>
-          <TableColumn key="location" allowsSorting>
-            Ort
-          </TableColumn>
-          <TableColumn key="actions">Aktion</TableColumn>
-        </TableHeader>
-        <TableBody emptyContent={"Keine Medien ausgewählt"}>
-          {mediaList.map((item) => {
-            const mediaTypeWithIcon = mediaTypesWithIcons.find(
-              (icon) => icon.enum === getKeyValue(item, "type"),
-            );
+      {topContent}
+      <Table>
+        <Table.ScrollContainer>
+          <Table.Content aria-label="Media Table">
+            <Table.Header>
+              <Table.Column key="type" className="w-10" isRowHeader>
+                Typ
+              </Table.Column>
+              <Table.Column key="title" allowsSorting>
+                Titel
+              </Table.Column>
+              <Table.Column key="authorName" allowsSorting>
+                Author
+              </Table.Column>
+              <Table.Column key="location" allowsSorting>
+                Ort
+              </Table.Column>
+              <Table.Column key="actions">Aktion</Table.Column>
+            </Table.Header>
+            <Table.Body items={mediaList}>
+              {(item: MediaTableProp) => {
+                const mediaTypeWithIcon = mediaTypesWithIcons.find(
+                  (icon) => icon.enum === getKeyValue(item, "type"),
+                );
 
-            return (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
-                </TableCell>
-                <TableCell>{getKeyValue(item, "title")}</TableCell>
-                <TableCell>{getKeyValue(item, "authorName")}</TableCell>
-                <TableCell>{getKeyValue(item, "locationName")}</TableCell>
-                <TableCell>
-                  <Tooltip content="Medium editieren">
-                    <Button
-                      isIconOnly
-                      color="danger"
-                      variant="light"
-                      onPress={() => {
-                        setMediaList((prevMediaList) =>
-                          prevMediaList.filter((media) => media.id !== item.id),
-                        );
-                      }}
-                    >
-                      <BsXLg />
-                    </Button>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
+                return (
+                  <Table.Row key={item.id}>
+                    <Table.Cell>
+                      {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
+                    </Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "title")}</Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "authorName")}</Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "locationName")}</Table.Cell>
+                    <Table.Cell>
+                      <Button
+                        isIconOnly
+                        onPress={() => {
+                          setMediaList((prevMediaList) =>
+                            prevMediaList.filter(
+                              (media) => media.id !== item.id,
+                            ),
+                          );
+                        }}
+                      >
+                        <BsXLg />
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              }}
+            </Table.Body>
+          </Table.Content>
+        </Table.ScrollContainer>
       </Table>
+      {bottomContent}
     </section>
   );
 }

@@ -3,25 +3,15 @@ import React from "react";
 import {
   Input,
   Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
-  useDisclosure,
   Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  getKeyValue,
-  Pagination,
   SortDescriptor,
   Selection,
 } from "@heroui/react";
 import { MediaTableProp } from "@/models/mediaTable";
 import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
+
+const getKeyValue = <T, K extends keyof T>(item: T, key: K): T[K] => item[key];
 
 export default function MediaModal({
   mediaList,
@@ -34,7 +24,6 @@ export default function MediaModal({
   close: () => void;
   setMedia: (selectedMedia: MediaTableProp) => void;
 }) {
-  const { onClose, onOpen, onOpenChange } = useDisclosure();
   const [filterValue, setFilterValue] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
@@ -96,13 +85,9 @@ export default function MediaModal({
     return (
       <div className="flex flex-col gap-4">
         <Input
-          isClearable
           placeholder="Suche nach Titel..."
-          size="sm"
           value={filterValue}
-          variant="bordered"
-          onClear={() => setFilterValue("")}
-          onValueChange={onSearchChange}
+          onChange={(event) => onSearchChange(event.target.value)}
         />
       </div>
     );
@@ -110,105 +95,123 @@ export default function MediaModal({
 
   const bottomMediaContent = React.useMemo(() => {
     return (
-      <div className="flex medias-center justify-between px-2 py-2">
-        <Pagination
-          showControls
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          color="default"
-          page={page}
-          total={MediaPages}
-          variant="light"
-          onChange={setPage}
-        />
+      <div className="medias-center flex justify-between px-2 py-2">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onPress={() => setPage((prev) => Math.max(1, prev - 1))}
+            isDisabled={page <= 1}
+          >
+            Zurueck
+          </Button>
+          <span className="text-sm">
+            Seite {page} / {Math.max(1, MediaPages)}
+          </span>
+          <Button
+            variant="ghost"
+            onPress={() =>
+              setPage((prev) => Math.min(Math.max(1, MediaPages), prev + 1))
+            }
+            isDisabled={page >= Math.max(1, MediaPages)}
+          >
+            Weiter
+          </Button>
+        </div>
       </div>
     );
   }, [page, MediaPages]);
 
   return (
-    <Modal
-      backdrop="blur"
-      size="5xl"
-      isOpen={show}
-      onClose={close}
-    >
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          verfügbare Medien
-        </ModalHeader>
-        <ModalBody>
-          <Table
-            aria-label="Media table"
-            topContent={topContent}
-            topContentPlacement="outside"
-            bottomContent={bottomMediaContent}
-            bottomContentPlacement="outside"
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
-            selectionMode="single"
-            selectedKeys={selectedMediaKeys}
-            onSelectionChange={setSelectedMediaKeys}
-          >
-            <TableHeader>
-              <TableColumn key="type" className="w-10">Typ</TableColumn>
-              <TableColumn key="id" allowsSorting>
-                Id
-              </TableColumn>
-              <TableColumn key="title" allowsSorting>
-                Title
-              </TableColumn>
-              <TableColumn key="authorName" allowsSorting>
-                Author
-              </TableColumn>
-              <TableColumn key="locationName" allowsSorting>
-                Lokation
-              </TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={"keine Medien gefunden"}>
-              {sortedItems.map((item) => {
-                const mediaTypeWithIcon = mediaTypesWithIcons.find(
-                  (icon) => icon.enum === getKeyValue(item, "type"),
-                );
+    <Modal>
+      <Modal.Backdrop
+        isOpen={show}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            close();
+          }
+        }}
+      >
+        <Modal.Container size="full">
+          <Modal.Dialog>
+            <Modal.Header className="flex flex-col gap-1">
+              <Modal.Heading>verfügbare Medien</Modal.Heading>
+            </Modal.Header>
+            <Modal.Body>
+              {topContent}
+              <Table>
+                <Table.ScrollContainer>
+                  <Table.Content aria-label="Media table">
+                    <Table.Header>
+                      <Table.Column key="type" className="w-10" isRowHeader>
+                        Typ
+                      </Table.Column>
+                      <Table.Column key="id" allowsSorting>
+                        Id
+                      </Table.Column>
+                      <Table.Column key="title" allowsSorting>
+                        Title
+                      </Table.Column>
+                      <Table.Column key="authorName" allowsSorting>
+                        Author
+                      </Table.Column>
+                      <Table.Column key="locationName" allowsSorting>
+                        Lokation
+                      </Table.Column>
+                    </Table.Header>
+                    <Table.Body items={sortedItems}>
+                      {(item: MediaTableProp) => {
+                        const mediaTypeWithIcon = mediaTypesWithIcons.find(
+                          (icon) => icon.enum === getKeyValue(item, "type"),
+                        );
 
-                return (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
-                    </TableCell>
-                    <TableCell>{getKeyValue(item, "id")}</TableCell>
-                    <TableCell>{getKeyValue(item, "title")}</TableCell>
-                    <TableCell>{getKeyValue(item, "authorName")}</TableCell>
-                    <TableCell>{getKeyValue(item, "locationName")}</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="danger" variant="light" onPress={close}>
-            schließen
-          </Button>
-          <Button
-            color="primary"
-            onPress={() => {
-              const selectedMedia = sortedItems.find(
-                (x) =>
-                  x.id ==
-                  (selectedMediaKeys as Set<string>).values().next().value,
-              );
-              if (selectedMedia) {
-                setMedia(selectedMedia);
-              }
+                        return (
+                          <Table.Row key={item.id}>
+                            <Table.Cell>
+                              {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
+                            </Table.Cell>
+                            <Table.Cell>{getKeyValue(item, "id")}</Table.Cell>
+                            <Table.Cell>
+                              {getKeyValue(item, "title")}
+                            </Table.Cell>
+                            <Table.Cell>
+                              {getKeyValue(item, "authorName")}
+                            </Table.Cell>
+                            <Table.Cell>
+                              {getKeyValue(item, "locationName")}
+                            </Table.Cell>
+                          </Table.Row>
+                        );
+                      }}
+                    </Table.Body>
+                  </Table.Content>
+                </Table.ScrollContainer>
+              </Table>
+              {bottomMediaContent}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="ghost" onPress={close}>
+                schließen
+              </Button>
+              <Button
+                onPress={() => {
+                  const selectedMedia = sortedItems.find(
+                    (x) =>
+                      x.id ==
+                      (selectedMediaKeys as Set<string>).values().next().value,
+                  );
+                  if (selectedMedia) {
+                    setMedia(selectedMedia);
+                  }
 
-              close();
-            }}
-          >
-            auswählen
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+                  close();
+                }}
+              >
+                auswählen
+              </Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   );
 }

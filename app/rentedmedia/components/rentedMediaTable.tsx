@@ -1,19 +1,5 @@
 "use client";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  getKeyValue,
-  Pagination,
-  Input,
-  Chip,
-  Button,
-  Link,
-  SortDescriptor,
-} from "@heroui/react";
+import { Table, Button, SortDescriptor } from "@heroui/react";
 import React from "react";
 import { RentedMediaTableProp } from "@/models/rentedMediaTable";
 import { updateRentedMediaById } from "@/actions/rentedMedia";
@@ -21,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
+
+const getKeyValue = <T, K extends keyof T>(item: T, key: K): T[K] => item[key];
 
 export default function RentedMediaTable({
   rentedMediaTableProps,
@@ -37,10 +25,8 @@ export default function RentedMediaTable({
   });
 
   React.useEffect(() => {
-    if(session)
-      setEmployee(true);
+    if (session) setEmployee(true);
   });
-  
 
   const medias = rentedMediaTableProps;
   const rowsPerPage = 10;
@@ -69,17 +55,27 @@ export default function RentedMediaTable({
   const bottomContent = React.useMemo(() => {
     return (
       <div className="flex items-center justify-between px-2 py-2">
-        <Pagination
-          showControls
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          color="default"
-          page={page}
-          total={pages}
-          variant="light"
-          onChange={setPage}
-        />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onPress={() => setPage((prev) => Math.max(1, prev - 1))}
+            isDisabled={page <= 1}
+          >
+            Zurueck
+          </Button>
+          <span className="text-sm">
+            Seite {page} / {Math.max(1, pages)}
+          </span>
+          <Button
+            variant="ghost"
+            onPress={() =>
+              setPage((prev) => Math.min(Math.max(1, pages), prev + 1))
+            }
+            isDisabled={page >= Math.max(1, pages)}
+          >
+            Weiter
+          </Button>
+        </div>
       </div>
     );
   }, [items.length, page, pages]);
@@ -98,72 +94,73 @@ export default function RentedMediaTable({
 
   return (
     <section>
-      <Table
-        aria-label="return media table"
-        topContentPlacement="outside"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-        sortDescriptor={sortDescriptor}
-        onSortChange={setSortDescriptor}
-      >
-        <TableHeader>
-          <TableColumn key="mediaType">
-            Typ
-          </TableColumn>
-          <TableColumn key="mediaTitle" allowsSorting>
-            Titel
-          </TableColumn>
-          <TableColumn key="mediaId" allowsSorting>
-            Media ID
-          </TableColumn>
-          <TableColumn key="rentedAt" allowsSorting>
-            Ausgeliehen am
-          </TableColumn>
-          <TableColumn key="returnedAt" allowsSorting>
-            Zurückgegeben am
-          </TableColumn>
-          <TableColumn key="action" hidden={!isEmployee}>Aktion</TableColumn>
-        </TableHeader>
-        <TableBody emptyContent={"keine ausgeliehenen Medien gefunden."}>
-        {sortedItems.map((item) => {
-            const mediaTypeWithIcon = mediaTypesWithIcons.find(
-              (icon) => icon.enum === getKeyValue(item, "mediaType"),
-            );
+      <Table>
+        <Table.ScrollContainer>
+          <Table.Content aria-label="return media table">
+            <Table.Header>
+              <Table.Column key="mediaType" isRowHeader>Typ</Table.Column>
+              <Table.Column key="mediaTitle" allowsSorting>
+                Titel
+              </Table.Column>
+              <Table.Column key="mediaId" allowsSorting>
+                Media ID
+              </Table.Column>
+              <Table.Column key="rentedAt" allowsSorting>
+                Ausgeliehen am
+              </Table.Column>
+              <Table.Column key="returnedAt" allowsSorting>
+                Zurückgegeben am
+              </Table.Column>
+              {isEmployee && <Table.Column key="action">Aktion</Table.Column>}
+            </Table.Header>
+            <Table.Body items={sortedItems}>
+              {(item: RentedMediaTableProp) => {
+                const mediaTypeWithIcon = mediaTypesWithIcons.find(
+                  (icon) => icon.enum === getKeyValue(item, "mediaType"),
+                );
 
-            return (
-            <TableRow key={item.id}>
-              <TableCell>
-                  {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
-                </TableCell>
-              <TableCell>{getKeyValue(item, "mediaTitle")}</TableCell>
-              <TableCell>{getKeyValue(item, "mediaId")}</TableCell>
-              <TableCell>
-                {getKeyValue(item, "rentedAt").toLocaleDateString()}
-              </TableCell>
-              <TableCell>
-                {getKeyValue(item, "returnedAt")
-                  ? getKeyValue(item, "returnedAt").toLocaleDateString()
-                  : "-"}
-              </TableCell>
-              <TableCell hidden={!isEmployee}>
-                {getKeyValue(item, "returnedAt") ? (
-                  "-"
-                ) : (
-                  <Button
-                    onPress={() => updateRentedMedia(getKeyValue(item, "id"))}
-                    color="primary"
-                    variant="flat"
-                    disabled={!isEmployee}
-                  >
-                    zurückgegeben
-                  </Button>
-                )}
-              </TableCell>
-            </TableRow>
-                 );
-          })}
-        </TableBody>
+                return (
+                  <Table.Row key={item.id}>
+                    <Table.Cell>
+                      {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
+                    </Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "mediaTitle")}</Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "mediaId")}</Table.Cell>
+                    <Table.Cell>
+                      {getKeyValue(item, "rentedAt").toLocaleDateString()}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {(() => {
+                        const returnedAt = getKeyValue(item, "returnedAt");
+                        return returnedAt
+                          ? returnedAt.toLocaleDateString()
+                          : "-";
+                      })()}
+                    </Table.Cell>
+                    {isEmployee && (
+                      <Table.Cell>
+                        {getKeyValue(item, "returnedAt") ? (
+                          "-"
+                        ) : (
+                          <Button
+                            onPress={() =>
+                              updateRentedMedia(getKeyValue(item, "id"))
+                            }
+                            isDisabled={!isEmployee}
+                          >
+                            zurückgegeben
+                          </Button>
+                        )}
+                      </Table.Cell>
+                    )}
+                  </Table.Row>
+                );
+              }}
+            </Table.Body>
+          </Table.Content>
+        </Table.ScrollContainer>
       </Table>
+      {bottomContent}
     </section>
   );
 }
