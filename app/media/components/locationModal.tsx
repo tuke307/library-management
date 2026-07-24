@@ -1,24 +1,9 @@
 "use client";
 import React from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  getKeyValue,
-  Pagination,
-  SortDescriptor,
-  Selection,
-} from "@heroui/react";
+import { Modal, Button, Table, SortDescriptor, Selection } from "@heroui/react";
 import type { Location } from "@/client";
+
+const getKeyValue = <T, K extends keyof T>(item: T, key: K): T[K] => item[key];
 
 export default function LocationModal({
   freeLocations,
@@ -64,95 +49,110 @@ export default function LocationModal({
   const bottomLocationContent = React.useMemo(() => {
     return (
       <div className="flex items-center justify-between px-2 py-2">
-        <Pagination
-          showControls
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          color="default"
-          page={locationPage}
-          total={locationPages}
-          variant="light"
-          onChange={setLocationPage}
-        />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onPress={() => setLocationPage((prev) => Math.max(1, prev - 1))}
+            isDisabled={locationPage <= 1}
+          >
+            Zurueck
+          </Button>
+          <span className="text-sm">
+            Seite {locationPage} / {Math.max(1, locationPages)}
+          </span>
+          <Button
+            variant="ghost"
+            onPress={() =>
+              setLocationPage((prev) =>
+                Math.min(Math.max(1, locationPages), prev + 1),
+              )
+            }
+            isDisabled={locationPage >= Math.max(1, locationPages)}
+          >
+            Weiter
+          </Button>
+        </div>
       </div>
     );
   }, [locationPage, locationPages]);
 
   return (
-    <Modal
-      backdrop="blur"
-      size="5xl"
-      isOpen={show}
-      onClose={close}
-      id="location-modal"
-    >
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          freie Lokationen
-        </ModalHeader>
-        <ModalBody>
-          <Table
-            aria-label="location table"
-            id="modal-location-table"
-            topContentPlacement="outside"
-            bottomContent={bottomLocationContent}
-            bottomContentPlacement="outside"
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
-            selectionMode="single"
-            selectedKeys={selectedLocationKeys}
-            onSelectionChange={setSelectedLocationKeys}
-            
-          >
-            <TableHeader>
-              <TableColumn key="floor" allowsSorting>
-                Etage
-              </TableColumn>
-              <TableColumn key="shelf" allowsSorting>
-                Schrank
-              </TableColumn>
-              <TableColumn key="shelfSection" allowsSorting>
-                Schranksektion
-              </TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={"keine lokationen gefunden"}>
-              {sortedLocationItems.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{getKeyValue(item, "floor")}</TableCell>
-                  <TableCell>{getKeyValue(item, "shelf")}</TableCell>
-                  <TableCell>{getKeyValue(item, "shelfSection")}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="danger" variant="light" onPress={close}>
-            schließen
-          </Button>
-          <Button
-            color="primary"
-            onPress={() => {
-              const selectedKey = (selectedLocationKeys as Set<string>).values().next().value;
-              let selectedLocation: Location | undefined;
-              if (selectedKey !== undefined) {
-                const selectedId = Number(selectedKey);
-                if (!Number.isNaN(selectedId)) {
-                  selectedLocation = sortedLocationItems.find((x) => x.id === selectedId);
-                }
-              }
-              if (selectedLocation) {
-                setLocation(selectedLocation);
-              }
+    <Modal>
+      <Modal.Backdrop
+        isOpen={show}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            close();
+          }
+        }}
+      >
+        <Modal.Container size="full">
+          <Modal.Dialog>
+            <Modal.Header className="flex flex-col gap-1">
+              <Modal.Heading>freie Lokationen</Modal.Heading>
+            </Modal.Header>
+            <Modal.Body>
+              {bottomLocationContent}
+              <Table>
+                <Table.ScrollContainer>
+                  <Table.Content aria-label="location table">
+                    <Table.Header>
+                      <Table.Column key="floor" allowsSorting isRowHeader>
+                        Etage
+                      </Table.Column>
+                      <Table.Column key="shelf" allowsSorting>
+                        Schrank
+                      </Table.Column>
+                      <Table.Column key="shelfSection" allowsSorting>
+                        Schranksektion
+                      </Table.Column>
+                    </Table.Header>
+                    <Table.Body items={sortedLocationItems}>
+                      {(item: Location) => (
+                        <Table.Row key={item.id}>
+                          <Table.Cell>{getKeyValue(item, "floor")}</Table.Cell>
+                          <Table.Cell>{getKeyValue(item, "shelf")}</Table.Cell>
+                          <Table.Cell>
+                            {getKeyValue(item, "shelfSection")}
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+                    </Table.Body>
+                  </Table.Content>
+                </Table.ScrollContainer>
+              </Table>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="ghost" onPress={close}>
+                schließen
+              </Button>
+              <Button
+                onPress={() => {
+                  const selectedKey = (selectedLocationKeys as Set<string>)
+                    .values()
+                    .next().value;
+                  let selectedLocation: Location | undefined;
+                  if (selectedKey !== undefined) {
+                    const selectedId = Number(selectedKey);
+                    if (!Number.isNaN(selectedId)) {
+                      selectedLocation = sortedLocationItems.find(
+                        (x) => x.id === selectedId,
+                      );
+                    }
+                  }
+                  if (selectedLocation) {
+                    setLocation(selectedLocation);
+                  }
 
-              close();
-            }}
-          >
-            auswählen
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+                  close();
+                }}
+              >
+                auswählen
+              </Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   );
 }

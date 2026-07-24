@@ -22,10 +22,7 @@ const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         if (!credentials?.id || !credentials?.password) return null;
         try {
-          const user = await login(
-            credentials.id,
-            credentials.password
-          );
+          const user = await login(credentials.id, credentials.password);
           return user;
         } catch (e) {
           console.error(e);
@@ -36,7 +33,7 @@ const authOptions: NextAuthOptions = {
     /* ... additional providers ... /*/
   ],
   pages: {
-   signIn: "/employee/login",
+    signIn: "/employee/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
@@ -72,7 +69,7 @@ const authOptions: NextAuthOptions = {
     async session({ session, user, token }) {
       return session;
     },
-    async jwt({ token, user, account, profile }) {      
+    async jwt({ token, user, account, profile }) {
       return token;
     },
   },

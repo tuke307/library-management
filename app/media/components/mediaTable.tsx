@@ -1,27 +1,20 @@
 "use client";
 import {
   Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  getKeyValue,
-  Pagination,
   Input,
   Chip,
   Button,
   Link,
   SortDescriptor,
-  Tooltip,
   Checkbox,
 } from "@heroui/react";
 import React from "react";
 import { MediaTableProp } from "@/models/mediaTable";
-import { BsSearch, BsPen } from "react-icons/bs";
-import { useRouter } from "next/navigation";
+import { BsPen } from "react-icons/bs";
 import { mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
 import { setMediaExists } from "@/actions/media";
+
+const getKeyValue = <T, K extends keyof T>(item: T, key: K): T[K] => item[key];
 
 interface MediaTableProps {
   mediaTableProps: MediaTableProp[] | null;
@@ -36,7 +29,6 @@ export default function MediaTable({
   showExistCheckbox = false,
   updateMediaTableProps = () => {},
 }: MediaTableProps) {
-  const router = useRouter();
   const [filterValue, setFilterValue] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
@@ -60,7 +52,7 @@ export default function MediaTable({
     }
 
     return filteredUsers;
-  }, [medias, filterValue]);
+  }, [medias, filterValue, hasSearchFilter]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -79,8 +71,6 @@ export default function MediaTable({
     });
   }, [sortDescriptor, items]);
 
-  
-  
   const onSearchChange = React.useCallback(
     (value: React.SetStateAction<string>) => {
       if (value) {
@@ -97,38 +87,42 @@ export default function MediaTable({
     return (
       <div className="flex flex-col gap-4">
         <Input
-          isClearable
           className="w-full sm:max-w-[44%]"
           placeholder="Suche nach Titel..."
-          size="md"
           value={filterValue}
-          variant="bordered"
-          onClear={() => setFilterValue("")}
-          onValueChange={onSearchChange}
-          startContent={<BsSearch />}
+          onChange={(event) => onSearchChange(event.target.value)}
         />
       </div>
     );
-  }, [filterValue, onSearchChange, hasSearchFilter]);
+  }, [filterValue, onSearchChange]);
 
   const bottomContent = React.useMemo(() => {
     return (
       <div className="flex items-center justify-between px-2 py-2">
-        <Pagination
-          showControls
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          color="default"
-          isDisabled={hasSearchFilter}
-          page={page}
-          total={pages}
-          variant="light"
-          onChange={setPage}
-        />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onPress={() => setPage((prev) => Math.max(1, prev - 1))}
+            isDisabled={page <= 1}
+          >
+            Zurueck
+          </Button>
+          <span className="text-sm">
+            Seite {page} / {Math.max(1, pages)}
+          </span>
+          <Button
+            variant="ghost"
+            onPress={() =>
+              setPage((prev) => Math.min(Math.max(1, pages), prev + 1))
+            }
+            isDisabled={page >= Math.max(1, pages)}
+          >
+            Weiter
+          </Button>
+        </div>
       </div>
     );
-  }, [items.length, page, pages, hasSearchFilter]);
+  }, [page, pages]);
 
   const handleCheckboxChange = async (id: string, exists: boolean) => {
     await setMediaExists(id, exists);
@@ -137,96 +131,90 @@ export default function MediaTable({
 
   return (
     <section>
-      <Table
-        aria-label="Media Table"
-        topContent={topContent}
-        topContentPlacement="outside"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-        sortDescriptor={sortDescriptor}
-        onSortChange={setSortDescriptor}
-        selectionMode="single"
-        onRowAction={(key) => router.push(`/media/view/${key}`)}
-      >
-        <TableHeader>
-          <TableColumn key="type" className="w-10">
-            Typ
-          </TableColumn>
-          <TableColumn key="title" allowsSorting>
-            Titel
-          </TableColumn>
-          <TableColumn key="authorName" allowsSorting>
-            Author
-          </TableColumn>
-          <TableColumn key="location" allowsSorting>
-            Ort
-          </TableColumn>
-          <TableColumn key="rented" allowsSorting>
-            Verfügbarkeit
-          </TableColumn>
-          <TableColumn key="exists" hidden={!showExistCheckbox}>
-            Existiert
-          </TableColumn>
-          <TableColumn key="actions" hidden={!showActions}>
-            Aktionen
-          </TableColumn>
-        </TableHeader>
-        <TableBody emptyContent={"keine Medien gefunden."}>
-          {sortedItems.map((item) => {
-            const mediaTypeWithIcon = mediaTypesWithIcons.find(
-              (icon) => icon.enum === getKeyValue(item, "type"),
-            );
+      {topContent}
+      <Table>
+        <Table.ScrollContainer>
+          <Table.Content aria-label="Media Table">
+            <Table.Header>
+              <Table.Column key="type" className="w-10" isRowHeader>
+                Typ
+              </Table.Column>
+              <Table.Column key="title" allowsSorting>
+                Titel
+              </Table.Column>
+              <Table.Column key="authorName" allowsSorting>
+                Author
+              </Table.Column>
+              <Table.Column key="location" allowsSorting>
+                Ort
+              </Table.Column>
+              <Table.Column key="rented" allowsSorting>
+                Verfugbarkeit
+              </Table.Column>
+              {showExistCheckbox && (
+                <Table.Column key="exists">Existiert</Table.Column>
+              )}
+              {showActions && (
+                <Table.Column key="actions">Aktionen</Table.Column>
+              )}
+            </Table.Header>
+            <Table.Body items={sortedItems}>
+              {(item: MediaTableProp) => {
+                const mediaTypeWithIcon = mediaTypesWithIcons.find(
+                  (icon) => icon.enum === getKeyValue(item, "type"),
+                );
 
-            return (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
-                </TableCell>
-                <TableCell>{getKeyValue(item, "title")}</TableCell>
-                <TableCell>{getKeyValue(item, "authorName")}</TableCell>
-                <TableCell>{getKeyValue(item, "locationName")}</TableCell>
-                <TableCell>
-                  <Chip
-                    className="gap-1 border-none capitalize text-default-600"
-                    color={
-                      Boolean(getKeyValue(item, "rented"))
-                        ? "danger"
-                        : "success"
-                    }
-                    size="sm"
-                    variant="flat"
-                  >
-                    {Boolean(getKeyValue(item, "rented"))
-                      ? "ausgeliehen"
-                      : "verfügbar"}
-                  </Chip>
-                </TableCell>
-                <TableCell hidden={!showExistCheckbox}>
-                <Checkbox
-              isSelected={getKeyValue(item, "exists")} // Check the "exists" property
-              onChange={(event) =>
-                handleCheckboxChange(item.id, event.target.checked)
-              }
-            />
-                </TableCell>
-                <TableCell hidden={!showActions}>
-                  <Tooltip content="Medium editieren">
-                    <Button
-                      isIconOnly
-                      href={`/media/edit/${getKeyValue(item, "id")}`}
-                      as={Link}
-                      color="primary"
-                      variant="light"
-                    >
-                      <BsPen />
-                    </Button>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
+                return (
+                  <Table.Row id={item.id} key={item.id}>
+                    <Table.Cell>
+                      {mediaTypeWithIcon ? mediaTypeWithIcon.icon : ""}
+                    </Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "title")}</Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "authorName")}</Table.Cell>
+                    <Table.Cell>{getKeyValue(item, "locationName")}</Table.Cell>
+                    <Table.Cell>
+                      <Chip
+                        className="text-default-600 gap-1 border-none capitalize"
+                        color={
+                          Boolean(getKeyValue(item, "rented"))
+                            ? "danger"
+                            : "success"
+                        }
+                        size="sm"
+                      >
+                        {Boolean(getKeyValue(item, "rented"))
+                          ? "ausgeliehen"
+                          : "verfugbar"}
+                      </Chip>
+                    </Table.Cell>
+                    {showExistCheckbox && (
+                      <Table.Cell>
+                        <Checkbox
+                          isSelected={Boolean(getKeyValue(item, "exists"))}
+                          onChange={(isSelected) =>
+                            handleCheckboxChange(item.id, Boolean(isSelected))
+                          }
+                        />
+                      </Table.Cell>
+                    )}
+                    {showActions && (
+                      <Table.Cell>
+                        <Link
+                          href={`/media/edit/${getKeyValue(item, "id")}`}
+                          className="border-default-200 inline-flex h-8 w-8 items-center justify-center rounded-md border"
+                        >
+                          <BsPen />
+                        </Link>
+                      </Table.Cell>
+                    )}
+                  </Table.Row>
+                );
+              }}
+            </Table.Body>
+          </Table.Content>
+        </Table.ScrollContainer>
       </Table>
+      {bottomContent}
     </section>
   );
 }

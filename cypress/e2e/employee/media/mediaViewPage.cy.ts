@@ -17,5 +17,4 @@ describe("Media View Page", () => {
     cy.contains("Lokation").should("exist");
     cy.contains("Ausleihe").should("not.exist");
   });
-
 });

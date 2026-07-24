@@ -1,31 +1,25 @@
 "use client";
 import {
-  Textarea,
+  TextArea,
   Input,
-  Spacer,
   Card,
-  CardBody,
+  CardContent,
   CardHeader,
-  Divider,
+  Separator,
   Button,
-  Select,
-  SelectItem,
   Switch,
-  Badge,
 } from "@heroui/react";
 import React from "react";
 import { toast } from "react-toastify";
 import { MediaDetailProp } from "@/models/mediaDetails";
 import { MEDIA_TYPE, mediaTypesWithIcons } from "@/models/mediaTypesWithIcons";
+import { BsSave, BsX, BsTrash, BsSearch, BsPlusLg } from "react-icons/bs";
 import {
-  BsSave,
-  BsX,
-  BsTrash,
-  BsSearch,
-  BsPlusLg,
-  BsExclamation,
-} from "react-icons/bs";
-import { IUpdateMedia, createMedia, deleteMedia, updateMedia } from "@/actions/media";
+  IUpdateMedia,
+  createMedia,
+  deleteMedia,
+  updateMedia,
+} from "@/actions/media";
 import { useRouter } from "next/navigation";
 import type { Author, Location, Media, MediaType, User } from "@/client";
 import AuthorModal from "./authorModal";
@@ -130,7 +124,7 @@ export default function CreateMedia({
         return;
       }
 
-      const newMedia : IUpdateMedia = {
+      const newMedia: IUpdateMedia = {
         id: formData.mediaId,
         type: formData.mediaType,
         title: formData.mediaTitle,
@@ -175,42 +169,34 @@ export default function CreateMedia({
     return (
       <div className="flex justify-start gap-3">
         {!editMode && (
-          <SubmitButton
-            color="success"
-            variant="flat"
-            startContent={<BsPlusLg className="m-1" />}
-            onPress={() => handleSubmit("create")}
-          >
+          <SubmitButton onPress={() => handleSubmit("create")}>
+            <span className="mr-2 inline-flex">
+              <BsPlusLg className="m-1" />
+            </span>
             erstellen
           </SubmitButton>
         )}
 
         {editMode && (
           <>
-            <SubmitButton
-              color="success"
-              variant="flat"
-              startContent={<BsSave />}
-              onPress={() => handleSubmit("update")}
-            >
+            <SubmitButton onPress={() => handleSubmit("update")}>
+              <span className="mr-2 inline-flex">
+                <BsSave />
+              </span>
               Speichern
             </SubmitButton>
 
-            <SubmitButton
-              color="warning"
-              variant="flat"
-              startContent={<BsX />}
-              onPress={() => handleSubmit("discard")}
-            >
+            <SubmitButton onPress={() => handleSubmit("discard")}>
+              <span className="mr-2 inline-flex">
+                <BsX />
+              </span>
               Abbrechen
             </SubmitButton>
 
-            <SubmitButton
-              color="danger"
-              variant="flat"
-              startContent={<BsTrash />}
-              onPress={() => handleSubmit("delete")}
-            >
+            <SubmitButton onPress={() => handleSubmit("delete")}>
+              <span className="mr-2 inline-flex">
+                <BsTrash />
+              </span>
               Löschen
             </SubmitButton>
           </>
@@ -247,292 +233,246 @@ export default function CreateMedia({
   return (
     <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
       <div className="flex flex-row gap-3">
-        <Card shadow="md" className="flex min-w-[50%] flex-grow">
+        <Card className="flex min-w-[50%] flex-grow shadow-md">
           <CardHeader className="flex gap-3">
             <h1 className="text-3xl">Medium</h1>
           </CardHeader>
 
-          <Divider />
+          <Separator />
 
-          <CardBody className="flex-col">
+          <CardContent className="flex-col">
             <div className="sr-only" hidden>
               <Input
-                isReadOnly
+                readOnly
                 type="text"
-                label="Id"
                 name="mediaId"
-                variant="bordered"
                 onChange={handleChange}
                 value={formData.mediaId}
               />
             </div>
 
             <div>
-              <Select
-                isRequired={!editMode}
-                label="Medientyp"
-                name="mediaMediaType"
-                selectionMode="single"
-                className="max-w"
-                items={mediaTypesWithIcons}
+              <label className="mb-2 block text-sm" htmlFor="mediaType">
+                Medientyp
+              </label>
+              <select
+                id="mediaType"
+                required={!editMode}
+                name="mediaType"
+                className="rounded-medium border-default-200 w-full border bg-transparent px-3 py-2"
                 value={formData.mediaType.toString()}
-                defaultSelectedKeys={["BOOK"]}
                 onChange={handleChange}
               >
-                {(mediaType) => (
-                  <SelectItem
-                    key={mediaType.enum}
-                    startContent={mediaType.icon}
-                  >
+                {mediaTypesWithIcons.map((mediaType) => (
+                  <option key={mediaType.enum} value={mediaType.enum}>
                     {mediaType.label}
-                  </SelectItem>
-                )}
-              </Select>
+                  </option>
+                ))}
+              </select>
 
-              <Spacer y={7} />
+              <div className="h-7" />
             </div>
 
             <Input
-              isRequired={!editMode}
+              required={!editMode}
               type="text"
-              label="Titel"
               name="mediaTitle"
-              variant="bordered"
               className="max-w"
               onChange={handleChange}
               value={formData.mediaTitle}
             />
 
-            <Spacer y={2} />
+            <div className="h-2" />
 
-            <Textarea
-              type="text"
-              label="Inhaltsausschnitt"
+            <TextArea
               name="mediaContent"
-              variant="bordered"
               className="max-w"
               onChange={handleChange}
               value={formData.mediaContent}
             />
 
-            <Spacer y={7} />
+            <div className="h-7" />
 
             <Input
               type="text"
-              label="ISBN"
               name="mediaISBN"
-              variant="bordered"
               className="max-w"
               value={formData.mediaISBN}
               onChange={handleChange}
             />
 
             <div>
-              <Spacer y={2} />
+              <div className="h-2" />
 
               <Switch
                 defaultSelected
                 name="published"
-                color="default"
-                value={formData.mediaPublished.toString()}
-                onChange={handleChange}
+                isSelected={Boolean(formData.mediaPublished)}
+                onChange={(isSelected) =>
+                  setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    mediaPublished: isSelected,
+                  }))
+                }
               >
                 veröffentlicht
               </Switch>
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
 
         <div className="flex flex-col flex-wrap gap-3">
-          <Card shadow="md">
+          <Card className="shadow-md">
             <CardHeader className="flex justify-between gap-3">
               <h1 className="text-3xl">Author</h1>
 
               {(!editMode || editMode) && (
                 <div className="flex flex-row gap-2">
-                  <Badge
-                    isOneChar
-                    isInvisible={formData.authorId! > 0}
-                    content={<BsExclamation />}
-                    color="danger"
-                    shape="circle"
-                    placement="top-right"
+                  <Button
+                    isIconOnly
+                    onPress={() => setShowAuthorModal(true)}
+                    id="authorModalBtn"
                   >
-                    <Button
-                      isIconOnly
-                      onPress={() => setShowAuthorModal(true)}
-                      color="primary"
-                      id="authorModalBtn"
-                    >
-                      <BsSearch />
-                    </Button>
+                    <BsSearch />
+                  </Button>
 
-                    <AuthorModal
-                      authorList={authors}
-                      show={showAuthorModal}
-                      close={() => setShowAuthorModal(false)}
-                      setAuthor={setAuthor}
-                    />
-                  </Badge>
+                  <AuthorModal
+                    authorList={authors}
+                    show={showAuthorModal}
+                    close={() => setShowAuthorModal(false)}
+                    setAuthor={setAuthor}
+                  />
                 </div>
               )}
             </CardHeader>
 
-            <Divider />
+            <Separator />
 
-            <CardBody>
+            <CardContent>
               <div className="flex gap-2">
                 <div className="sr-only" hidden>
                   <Input
-                    isReadOnly
+                    readOnly
                     type="number"
-                    label="Author-ID"
                     name="authorId"
-                    variant="bordered"
                     value={formData.authorId?.toString()}
                     onChange={handleChange}
                   />
                 </div>
                 <Input
-                  isReadOnly
-                  isDisabled
-                  isRequired={!editMode}
+                  readOnly
+                  disabled
+                  required={!editMode}
                   type="text"
-                  label="Nachname"
                   name="authorLastName"
-                  variant="bordered"
                   className="flex-grow"
                   value={formData.authorLastName}
                   onChange={handleChange}
                 />
                 <Input
-                  isReadOnly
-                  isDisabled
-                  isRequired={!editMode}
+                  readOnly
+                  disabled
+                  required={!editMode}
                   type="text"
-                  label="Vorname"
                   name="authorFirstName"
-                  variant="bordered"
                   className="flex-grow"
                   value={formData.authorFirstName}
                   onChange={handleChange}
                 />
               </div>
 
-              <Spacer y={5} />
+              <div className="h-5" />
 
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="email"
-                label="Email"
                 name="authorEmail"
-                variant="bordered"
                 className="max-w"
                 value={formData.authorEmail}
               />
 
-              <Spacer y={3} />
+              <div className="h-3" />
 
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="text"
-                label="Geburtsdatum"
                 name="authorBirthday"
-                variant="bordered"
                 className="max-w"
                 value={formData.authorBirthday?.toLocaleDateString()}
               />
-            </CardBody>
+            </CardContent>
           </Card>
 
-          <Card shadow="md">
+          <Card className="shadow-md">
             <CardHeader className="flex justify-between gap-3">
               <h1 className="text-3xl">Lokation</h1>
 
               {(!editMode || editMode) && (
                 <div>
-                  <Badge
-                    isOneChar
-                    isInvisible={formData.locationId! > 0}
-                    content={<BsExclamation />}
-                    color="danger"
-                    shape="circle"
-                    placement="top-right"
+                  <Button
+                    isIconOnly
+                    id="locationModalBtn"
+                    onPress={() => setShowLocationModal(true)}
                   >
-                    <Button
-                      isIconOnly
-                      color="primary"
-                      id="locationModalBtn"
-                      onPress={() => setShowLocationModal(true)}
-                    >
-                      <BsSearch />
-                    </Button>
+                    <BsSearch />
+                  </Button>
 
-                    <LocationModal
-                      freeLocations={locations}
-                      show={showLocationModal}
-                      close={() => setShowLocationModal(false)}
-                      setLocation={setLocation}
-                    />
-                  </Badge>
+                  <LocationModal
+                    freeLocations={locations}
+                    show={showLocationModal}
+                    close={() => setShowLocationModal(false)}
+                    setLocation={setLocation}
+                  />
                 </div>
               )}
             </CardHeader>
-            <Divider />
-            <CardBody>
+            <Separator />
+            <CardContent>
               <div className="flex gap-2">
                 <div className="sr-only" hidden>
                   <Input
-                    isReadOnly
+                    readOnly
                     name="locationId"
                     type="number"
-                    label="Id"
-                    variant="bordered"
                     value={formData.locationId?.toString()}
                     onChange={handleChange}
                   />
                 </div>
 
                 <Input
-                  isReadOnly
-                  isDisabled
-                  isRequired={!editMode}
+                  readOnly
+                  disabled
+                  required={!editMode}
                   type="text"
-                  label="Etage"
                   name="locationFloor"
-                  variant="bordered"
                   className="grow"
                   value={formData.locationFloor?.toString()}
                   onChange={handleChange}
                 />
                 <Input
-                  isReadOnly
-                  isDisabled
-                  isRequired={!editMode}
+                  readOnly
+                  disabled
+                  required={!editMode}
                   type="text"
-                  label="Regal"
                   name="locationShelf"
-                  variant="bordered"
                   className="grow"
                   value={formData.locationShelf?.toString()}
                   onChange={handleChange}
                 />
                 <Input
-                  isReadOnly
-                  isDisabled
-                  isRequired={!editMode}
+                  readOnly
+                  disabled
+                  required={!editMode}
                   type="text"
                   name="locationShelfSection"
-                  label="Regalabschnitt"
-                  variant="bordered"
                   className="grow"
                   value={formData.locationShelfSection?.toString()}
                   onChange={handleChange}
                 />
               </div>
-            </CardBody>
+            </CardContent>
           </Card>
         </div>
       </div>

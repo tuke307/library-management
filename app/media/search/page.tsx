@@ -1,7 +1,7 @@
 import React from "react";
-import MediaTable from "../components/mediaTable";
 import { getMediaTable } from "@/actions/media";
 import { getServerSession } from "next-auth";
+import MediaTable from "../components/mediaTable";
 
 export default async function MediaSearchPage() {
   const mediaTableProps = await getMediaTable();

@@ -1,13 +1,12 @@
 "use client";
 import {
-  Textarea,
+  TextArea,
   Input,
   Chip,
-  Spacer,
   Card,
-  CardBody,
+  CardContent,
   CardHeader,
-  Divider,
+  Separator,
 } from "@heroui/react";
 import React from "react";
 import { MediaDetailProp } from "@/models/mediaDetails";
@@ -52,20 +51,16 @@ export default function ViewDetails({
   return (
     <form className="flex flex-col gap-3">
       <div className="flex flex-row gap-3">
-        <Card shadow="md" className="flex min-w-[50%] flex-grow">
+        <Card className="flex min-w-[50%] flex-grow shadow-md">
           <CardHeader className="flex gap-3">
             <h1 className="text-3xl">Medium</h1>
 
             <div className="flex flex-grow items-center gap-2">
-              <Chip
-                startContent={mediaType?.icon}
-                variant="flat"
-                color="default"
-              >
+              <Chip>
+                <span className="mr-2 inline-flex">{mediaType?.icon}</span>
                 {mediaType?.label}
               </Chip>
               <Chip
-                variant="flat"
                 color={mediaDetails?.mediaPublished ? "success" : "warning"}
               >
                 {mediaDetails?.mediaPublished
@@ -73,251 +68,219 @@ export default function ViewDetails({
                   : "unveröffentlicht"}
               </Chip>
 
-              <Chip variant="flat" color={isRented ? "warning" : "success"}>
+              <Chip
+                variant="secondary"
+                color={isRented ? "warning" : "success"}
+              >
                 {isRented ? "ausgeliehen" : "verfügbar"}
               </Chip>
             </div>
           </CardHeader>
 
-          <Divider />
+          <Separator />
 
-          <CardBody className="flex-col">
+          <CardContent className="flex-col">
             <div className="sr-only" hidden>
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="text"
-                label="Id"
                 name="mediaId"
-                variant="bordered"
                 onChange={handleChange}
                 value={formData.mediaId}
               />
             </div>
 
             <Input
-              isReadOnly
-              isDisabled
+              readOnly
+              disabled
               type="text"
-              label="Titel"
               name="mediaTitle"
-              variant="bordered"
               className="max-w"
               onChange={handleChange}
               value={formData.mediaTitle}
             />
 
-            <Spacer y={2} />
+            <div className="h-2" />
 
-            <Textarea
-              isReadOnly
-              isDisabled
-              type="text"
-              label="Inhaltsausschnitt"
+            <TextArea
+              readOnly
+              disabled
               name="mediaContent"
-              variant="bordered"
               className="max-w"
               onChange={handleChange}
               value={formData.mediaContent}
             />
 
-            <Spacer y={7} />
+            <div className="h-7" />
 
             <Input
-              isReadOnly
-              isDisabled
+              readOnly
+              disabled
               type="text"
-              label="ISBN"
               name="mediaISBN"
-              variant="bordered"
               className="max-w"
               value={formData.mediaISBN}
               onChange={handleChange}
             />
 
-            <Spacer y={2} />
+            <div className="h-2" />
 
             <div className="flex gap-2">
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="text"
-                label="hinzugefügt am"
                 name="mediaCreatedAt"
-                variant="bordered"
                 className="max-w"
                 value={formData.mediaCreatedAt?.toLocaleDateString()}
               />
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="text"
-                label="letztes Update"
                 name="mediaUpdatedAt"
-                variant="bordered"
                 className="max-w"
                 value={formData.mediaUpdatedAt?.toLocaleDateString()}
               />
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
 
         <div className="flex flex-col flex-wrap gap-3">
-          <Card shadow="md">
+          <Card className="shadow-md">
             <CardHeader className="flex justify-between gap-3">
               <h1 className="text-3xl">Author</h1>
             </CardHeader>
 
-            <Divider />
+            <Separator />
 
-            <CardBody>
+            <CardContent>
               <div className="flex gap-2">
                 <div className="sr-only" hidden>
                   <Input
-                    isReadOnly
+                    readOnly
                     type="number"
-                    label="Author-ID"
                     name="authorId"
-                    variant="bordered"
                     value={formData.authorId?.toString()}
                     onChange={handleChange}
                   />
                 </div>
                 <Input
-                  isReadOnly
-                  isDisabled
+                  readOnly
+                  disabled
                   type="text"
-                  label="Nachname"
                   name="authorLastName"
-                  variant="bordered"
                   className="flex-grow"
                   value={formData.authorLastName}
                   onChange={handleChange}
                 />
                 <Input
-                  isReadOnly
-                  isDisabled
+                  readOnly
+                  disabled
                   type="text"
-                  label="Vorname"
                   name="authorFirstName"
-                  variant="bordered"
                   className="flex-grow"
                   value={formData.authorFirstName}
                   onChange={handleChange}
                 />
               </div>
 
-              <Spacer y={5} />
+              <div className="h-5" />
 
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="email"
-                label="Email"
                 name="authorEmail"
-                variant="bordered"
                 className="max-w"
                 value={formData.authorEmail}
               />
 
-              <Spacer y={3} />
+              <div className="h-3" />
 
               <Input
-                isReadOnly
-                isDisabled
+                readOnly
+                disabled
                 type="text"
-                label="Geburtsdatum"
                 name="authorBirthday"
-                variant="bordered"
                 className="max-w"
                 value={formData.authorBirthday?.toLocaleDateString()}
               />
-            </CardBody>
+            </CardContent>
           </Card>
 
-          <Card shadow="md">
+          <Card className="shadow-md">
             <CardHeader className="flex justify-between gap-3">
               <h1 className="text-3xl">Lokation</h1>
             </CardHeader>
-            <Divider />
-            <CardBody>
+            <Separator />
+            <CardContent>
               <div className="flex gap-2">
                 <div className="sr-only" hidden>
                   <Input
-                    isReadOnly
+                    readOnly
                     name="locationId"
                     type="number"
-                    label="Id"
-                    variant="bordered"
                     value={formData.locationId?.toString()}
                     onChange={handleChange}
                   />
                 </div>
 
                 <Input
-                  isReadOnly
-                  isDisabled
+                  readOnly
+                  disabled
                   type="text"
-                  label="Etage"
                   name="locationFloor"
-                  variant="bordered"
                   className="grow"
                   value={formData.locationFloor?.toString()}
                   onChange={handleChange}
                 />
                 <Input
-                  isReadOnly
-                  isDisabled
+                  readOnly
+                  disabled
                   type="text"
-                  label="Regal"
                   name="locationShelf"
-                  variant="bordered"
                   className="grow"
                   value={formData.locationShelf?.toString()}
                   onChange={handleChange}
                 />
                 <Input
-                  isReadOnly
-                  isDisabled
+                  readOnly
+                  disabled
                   type="text"
                   name="locationShelfSection"
-                  label="Regalabschnitt"
-                  variant="bordered"
                   className="grow"
                   value={formData.locationShelfSection?.toString()}
                   onChange={handleChange}
                 />
               </div>
-            </CardBody>
+            </CardContent>
           </Card>
 
           {session && isRented && (
-            <Card shadow="md">
+            <Card className="shadow-md">
               <CardHeader className="flex justify-between gap-3">
                 <h1 className="text-3xl">Ausleihe</h1>
               </CardHeader>
 
               <div>
-                <Divider />
-                <CardBody className="flex flex-row gap-2">
+                <Separator />
+                <CardContent className="flex flex-row gap-2">
                   <div className="sr-only" hidden>
                     <Input
-                      isReadOnly
+                      readOnly
                       type="text"
-                      label="ID"
                       name="rentedMediaId"
-                      variant="bordered"
                       className="max-w"
                       value={formData.rentedMediaId!.toString()}
                     />
                   </div>
                   <Input
-                    isReadOnly
-                    isDisabled
+                    readOnly
+                    disabled
                     type="text"
-                    label="Kunden-ID"
                     name="rentedMediaUserId"
-                    variant="bordered"
                     className="max-w"
                     value={
                       formData.rentedMediaUserId === 0
@@ -326,26 +289,22 @@ export default function ViewDetails({
                     }
                   />
                   <Input
-                    isReadOnly
-                    isDisabled
+                    readOnly
+                    disabled
                     type="text"
-                    label="Nachname"
                     name="rentedMediaUserLastName"
-                    variant="bordered"
                     className="max-w"
                     value={formData.rentedMediaUserLastName!.toString()}
                   />
                   <Input
-                    isReadOnly
-                    isDisabled
+                    readOnly
+                    disabled
                     type="text"
-                    label="Nachname"
                     name="rentedMediaUserFirstName"
-                    variant="bordered"
                     className="max-w"
                     value={formData.rentedMediaUserFirstName!.toString()}
                   />
-                </CardBody>
+                </CardContent>
               </div>
             </Card>
           )}

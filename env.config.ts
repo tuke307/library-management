@@ -1,17 +1,17 @@
-import 'dotenv/config'
+import "dotenv/config";
 
-const requiredKeys = ['DATABASE_URL'] as const
+const requiredKeys = ["DATABASE_URL"] as const;
 
-export type EnvKey = (typeof requiredKeys)[number]
+export type EnvKey = (typeof requiredKeys)[number];
 
 const getEnv = (key: EnvKey) => {
-  const value = process.env[key]
+  const value = process.env[key];
   if (!value) {
-    throw new Error(`Missing environment variable: ${key}`)
+    throw new Error(`Missing environment variable: ${key}`);
   }
-  return value
-}
+  return value;
+};
 
 export const env = {
-  DATABASE_URL: getEnv('DATABASE_URL'),
-}
+  DATABASE_URL: getEnv("DATABASE_URL"),
+};

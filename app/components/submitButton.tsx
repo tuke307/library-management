@@ -6,6 +6,12 @@ export function SubmitButton({ ...props }: ButtonProps) {
   const { pending } = useFormStatus();
 
   return (
-    <Button isLoading={pending} type="submit" className="mt-3" color="primary" {...props} />
+    <Button
+      isPending={pending}
+      type="submit"
+      className="mt-3"
+      variant="primary"
+      {...props}
+    />
   );
 }

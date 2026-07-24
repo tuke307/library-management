@@ -1,18 +1,18 @@
 {
-    "version": "0.2",
-    "ignorePaths": [],
-    "dictionaryDefinitions": [],
-    "dictionaries": [],
-    "words": [
-        "esnext",
-        "Lokation",
-        "heroui",
-        "prisma",
-        "Regalabschnitt",
-        "tailwindcss",
-        "toastify"
-    ],
-    "ignoreWords": [],
-    "import": [],
-    "language": "en, de-de"
+  "version": "0.2",
+  "ignorePaths": [],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "esnext",
+    "Lokation",
+    "heroui",
+    "prisma",
+    "Regalabschnitt",
+    "tailwindcss",
+    "toastify"
+  ],
+  "ignoreWords": [],
+  "import": [],
+  "language": "en, de-de"
 }

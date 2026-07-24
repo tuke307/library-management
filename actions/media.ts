@@ -146,7 +146,7 @@ export async function getMediaDetails(
         media.rentedBy.length > 0 ? media.rentedBy[0].rentedAt : undefined,
       rentedMediaReturnDate:
         media.rentedBy.length > 0
-          ? media.rentedBy[0].returnedAt ?? undefined
+          ? (media.rentedBy[0].returnedAt ?? undefined)
           : undefined,
     };
 
@@ -318,7 +318,10 @@ export async function setAllMediaExists(exists: boolean): Promise<void> {
   }
 }
 
-export async function setMediaExists(id: string, exists: boolean): Promise<void> {
+export async function setMediaExists(
+  id: string,
+  exists: boolean,
+): Promise<void> {
   try {
     await prisma.media.update({
       where: {
@@ -332,5 +335,3 @@ export async function setMediaExists(id: string, exists: boolean): Promise<void>
     //console.log(err);
   }
 }
-
-
